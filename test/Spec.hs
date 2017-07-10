@@ -1,14 +1,17 @@
 import Test.Hspec
 
-import Lib (defaultBoard
+import Board (defaultBoard
            , Board(..)
            , isEmpty
            , indicies
            , getMarkerAt
            , setMarkerAt
-           , Marker(..)
            , isFull
            )
+import Types ( Marker(..)
+             )
+import Directions ( directions
+                  )
 
 main :: IO ()
 main = hspec $ do
@@ -37,5 +40,5 @@ boardSpec = describe "Board" $ do
 
 gameSpec :: SpecWith (Arg Expectation)
 gameSpec = describe "gamespec is not implemented" $ do
-  it "tests if 1 is 1" $ do
-    1 `shouldBe` 1
+  it "should have 8 directions (cardinal)" $ do
+    length directions `shouldBe` 8

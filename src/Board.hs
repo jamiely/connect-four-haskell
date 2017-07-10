@@ -1,23 +1,15 @@
-module Lib
-    ( someFunc
-    , defaultBoard
+module Board
+    ( defaultBoard
     , Board(..)
     , isEmpty
     , indicies
     , setMarkerAt
     , getMarkerAt
-    , Marker(..)
     , isFull
     ) where
 
 import Data.Map as M
-
-someFunc :: IO ()
-someFunc = putStrLn "someFunc"
-
-type Index = (Int, Int)
-
-data Marker = Empty | X | O deriving (Show, Eq)
+import Types (Index, Marker(..))
 
 data Board = Board { rows :: Int
                    , columns :: Int
