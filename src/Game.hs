@@ -1,5 +1,5 @@
 module Game
-        ( checkPosition
+        ( checkBoardPos
         , Game(..)
         , firstEmptyRowIn
         , makeBoardMove
@@ -13,6 +13,7 @@ import Board (Board(..)
              , columnIndices
              , isEmptyAt
              , setMarkerAt
+             , getMarkerAt
              , defaultBoard)
 import Data.List (find)
 import Control.Monad.State (State(..)
@@ -29,9 +30,11 @@ initialState :: [GameState]
 initialState = [GameState { current = X, board = defaultBoard }]
 
 -- | Use to determine whether there are markers in a certain direction
-checkPosition :: Board -> Index -> Marker -> Direction -> Int -> Bool
-checkPosition _ _ _ _ 0 = True
-checkPosition board index marker dir steps = False
+checkBoardPos :: Board -> Index -> Marker -> Direction -> Int -> Bool
+checkBoardPos _ _ _ _ 0 = True
+checkBoardPos board index marker _ 1 = m == Just marker where
+  m = getMarkerAt index board
+checkBoardPos board index marker dir steps = False
 
 firstEmptyRowIn :: Board -> Int -> Maybe Int
 firstEmptyRowIn board@(Board { positions = ps }) col = fmap snd found where

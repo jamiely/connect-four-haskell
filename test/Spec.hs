@@ -15,7 +15,7 @@ import Directions ( directions
                   , north
                   )
 
-import Game (checkPosition
+import Game (checkBoardPos
           , firstEmptyRowIn
           , makeBoardMove
           , initialState
@@ -61,8 +61,8 @@ dirSpec = describe "gamespec is not implemented" $ do
 
 gameSpec :: SpecWith (Arg Expectation)
 gameSpec = describe "gamespec is not implemented" $ do
-  it "should return true when checkPosition is called with 0 steps" $ do
-    checkPosition defaultBoard origin X north 0 `shouldBe` True
+  it "should return true when checkBoardPos is called with 0 steps" $ do
+    checkBoardPos defaultBoard origin X north 0 `shouldBe` True
   it "should return first empty row" $ do
     firstEmptyRowIn defaultBoard 0 `shouldBe` Just 0
     let board1 = makeBoardMove 0 X defaultBoard
@@ -81,4 +81,8 @@ gameSpec = describe "gamespec is not implemented" $ do
     let finalState = evalState s initialState
     let finalBoard = board finalState
     firstEmptyRowIn finalBoard 0 `shouldBe` Nothing
-
+  it "should return true when checkBoardPos is called with an index and the marker at that index and 1 step" $ do
+    let b1 = defaultBoard
+    let b2 = setMarkerAt origin X b1
+    checkBoardPos b2 origin X north 1 `shouldBe` True
+    
