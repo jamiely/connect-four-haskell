@@ -16,9 +16,14 @@ import Directions ( directions
                   )
 
 import Game (checkPosition
-            , firstEmptyRowIn
-            , makeMove
+          , firstEmptyRowIn
+          , makeBoardMove
+          , initialState
+          , GameState(..)
+          , makeMove
             )
+import Control.Monad.State (evalState
+                           )
 
 main :: IO ()
 main = hspec $ do
@@ -57,10 +62,21 @@ gameSpec = describe "gamespec is not implemented" $ do
     checkPosition defaultBoard origin X north 0 `shouldBe` True
   it "should return first empty row" $ do
     firstEmptyRowIn defaultBoard 0 `shouldBe` Just 0
-    let board1 = makeMove 0 X defaultBoard
+    let board1 = makeBoardMove 0 X defaultBoard
     firstEmptyRowIn board1 0 `shouldBe` Just 1
-    let board2 = makeMove 0 X board1
+    let board2 = makeBoardMove 0 X board1
     firstEmptyRowIn board2 0 `shouldBe` Just 2
-    let board3 = makeMove 0 X board2
+    let board3 = makeBoardMove 0 X board2
     firstEmptyRowIn board3 0 `shouldBe` Just 3
+  it "is easy to make moves" $ do
+    let finalState = evalState s initialState
+    let finalBoard = board finalState
+    firstEmptyRowIn finalBoard 0 `shouldBe` Nothing where
+    s = do
+      makeMove 0
+      makeMove 0
+      makeMove 0
+      makeMove 0
+      makeMove 0
+      makeMove 0
 

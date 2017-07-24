@@ -21,6 +21,7 @@ library
                      , Game
   build-depends:       base >= 4.7 && < 5
                      , containers
+                     , mtl
   default-language:    Haskell2010
 
 executable connectfour-exe
@@ -38,6 +39,7 @@ test-suite connectfour-test
   build-depends:       base
                      , hspec
                      , connectfour
+                     , mtl
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   default-language:    Haskell2010
 
