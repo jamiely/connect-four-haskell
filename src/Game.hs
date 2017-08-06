@@ -6,9 +6,11 @@ module Game
         , initialState
         , GameState(..)
         , makeMove
+        , newGame
         ) where
 
 import Types (Marker(..), Index, Direction)
+import Directions (indexInDirection)
 import Board (Board(..)
              , columnIndices
              , isEmptyAt
@@ -26,15 +28,26 @@ data GameState = GameState { current :: Marker
 
 type Game = State [GameState] GameState
 
+originalState = GameState { current = X, board = defaultBoard }
+
 initialState :: [GameState]
-initialState = [GameState { current = X, board = defaultBoard }]
+initialState = [originalState]
+
+newGame :: Game
+newGame = do
+  let s = originalState
+  put [originalState]
+  return s
 
 -- | Use to determine whether there are markers in a certain direction
 checkBoardPos :: Board -> Index -> Marker -> Direction -> Int -> Bool
 checkBoardPos _ _ _ _ 0 = True
 checkBoardPos board index marker _ 1 = m == Just marker where
   m = getMarkerAt index board
-checkBoardPos board index marker dir steps = False
+checkBoardPos board index marker dir steps = m == Just marker && next where
+  nextIndex = indexInDirection dir index
+  m = getMarkerAt index board
+  next = checkBoardPos board nextIndex marker dir $ steps - 1
 
 firstEmptyRowIn :: Board -> Int -> Maybe Int
 firstEmptyRowIn board@(Board { positions = ps }) col = fmap snd found where

@@ -9,10 +9,14 @@ module Board
     , getMarkerAt
     , isFull
     , origin
+    , orderedIndices
+    , render
     ) where
 
 import Data.Map as M
 import Types (Index, Marker(..))
+import Data.List (intercalate)
+import Data.Maybe (maybe)
 
 data Board = Board { rows :: Int
                    , columns :: Int
@@ -31,6 +35,10 @@ createBoard rows cols = Board { rows = rows
                               , positions = positions} where
   is = [(c, r) | c <- [0..cols - 1], r <- [0..rows - 1]]
   positions = M.fromList $ zip is (cycle [Empty])
+
+orderedIndices :: Int -> Int -> [Index]
+orderedIndices rows cols = is where
+  is = [(c, r) | c <- [0..cols - 1], r <- [0..rows - 1]]
 
 indicies :: Board -> [Index]
 indicies board = keys $ positions board
@@ -58,4 +66,15 @@ isEmpty board = all (Empty ==) $ markers board
 
 isFull :: Board -> Bool
 isFull board = all (Empty /=) $ markers board
+
+render :: Board -> String
+render b@(Board { rows=rows, columns=cols, positions=positions }) = renderedRows where
+  renderRow r = intercalate "" [renderMarker (c, r) | c <- [0..cols-1]]
+  renderedRows = intercalate "\n" [renderRow r | r <- [rows-1, rows-2..0]]
+  renderMarker index = maybe " " showMarker $ getMarkerAt index b
+
+  showMarker :: Marker -> String
+  showMarker Empty = " "
+  showMarker X = "X"
+  showMarker O = "O"
 

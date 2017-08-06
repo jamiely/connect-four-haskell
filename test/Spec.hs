@@ -8,6 +8,7 @@ import Board (defaultBoard
            , setMarkerAt
            , isFull
            , origin
+           , render
            )
 import Types ( Marker(..)
              )
@@ -21,6 +22,7 @@ import Game (checkBoardPos
           , initialState
           , GameState(..)
           , makeMove
+          , newGame
             )
 import Control.Monad.State (evalState
                            )
@@ -53,6 +55,12 @@ boardSpec = describe "Board" $ do
     let is = indicies defaultBoard
     let newBoard = foldl (\b i -> setMarkerAt i X b) defaultBoard is
     isFull newBoard `shouldBe` True
+  it "should render board 1" $ do
+    let lastB = foldl (\b col -> setMarkerAt (col, 0) X b) defaultBoard [0..4]
+    render lastB `shouldBe` "       \n       \n       \n       \n       \nXXXXX  "
+  it "should render board 2" $ do
+    let lastB = foldl (\b row -> setMarkerAt (0, row) O b) defaultBoard [0..4]
+    render lastB `shouldBe` "       \nO      \nO      \nO      \nO      \nO      "
 
 dirSpec :: SpecWith (Arg Expectation)
 dirSpec = describe "gamespec is not implemented" $ do
@@ -85,4 +93,11 @@ gameSpec = describe "gamespec is not implemented" $ do
     let b1 = defaultBoard
     let b2 = setMarkerAt origin X b1
     checkBoardPos b2 origin X north 1 `shouldBe` True
-    
+  it "should return true when checkPosition is called with an index and the marker at that index, the same marker beneath it, and 2 steps" $ do
+    let moves = do makeMove 0 -- X
+                   makeMove 1 -- O
+                   makeMove 0 -- X
+    let lastState = evalState moves initialState
+    let b = board lastState
+    checkBoardPos b origin X north 2 `shouldBe` True
+
