@@ -62,4 +62,29 @@ spec = describe "gamespec is not implemented" $ do
     let lastState = evalState moves initialState
     let b = board lastState
     checkBoardPos b origin X north 2 `shouldBe` True
+  it "should alternate markers when making moves" $ do
+    let moves = do makeMove 0 -- X
+                   makeMove 1 -- O
+    let lastState = evalState moves initialState
+    let b = board lastState
+    render b `shouldBe` "       \n       \n       \n       \n       \nXO     "
+  it "should find first empty row" $ do
+    let moves = do makeMove 0
+                   makeMove 0
+                   makeMove 0
+    let lastState = evalState moves initialState
+    let b = board lastState
+    firstEmptyRowIn b 0 `shouldBe` Just 3
+  it "should return Nothing when no empty row" $ do
+    let moves = do makeMove 0
+                   makeMove 0
+                   makeMove 0
+                   makeMove 0
+                   makeMove 0
+                   makeMove 0
+    let lastState = evalState moves initialState
+    let b = board lastState
+    firstEmptyRowIn b 0 `shouldBe` Nothing
+
+
 
