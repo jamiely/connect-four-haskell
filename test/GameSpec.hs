@@ -3,11 +3,7 @@ module GameSpec (main, spec) where
 import Test.Hspec
 
 import Board (defaultBoard
-           , Board(..)
-           , indicies
-           , getMarkerAt
            , setMarkerAt
-           , isFull
            , origin
            , render
            )
