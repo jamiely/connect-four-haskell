@@ -85,6 +85,11 @@ spec = describe "gamespec is not implemented" $ do
     let lastState = evalState moves initialState
     let b = board lastState
     firstEmptyRowIn b 0 `shouldBe` Nothing
-
+  it "TODO: we should probably have some error instead. should return the same board when a move is made in a full column." $ do
+    let eval = \a -> evalState a initialState
+    let repl i = liftM last $ replicateM i $ makeMove 0
+    let p = eval $ repl 6
+    let q = eval $ repl 7
+    board p `shouldBe` board q
 
 

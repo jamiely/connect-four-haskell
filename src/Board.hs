@@ -21,7 +21,7 @@ import Data.Maybe (maybe)
 data Board = Board { rows :: Int
                    , columns :: Int
                    , positions :: M.Map Index Marker
-                   } deriving (Show)
+                   } deriving (Show, Eq)
 
 origin :: Index
 origin = (0, 0)
