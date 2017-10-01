@@ -9,7 +9,7 @@ main = hspec $ do
   spec
 
 spec :: SpecWith (Arg Expectation)
-spec = describe "gamespec is not implemented" $ do
+spec = describe "Directions" $ do
   it "should have 8 directions (cardinal)" $ do
     length directions `shouldBe` 8
 

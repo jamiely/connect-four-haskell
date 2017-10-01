@@ -40,8 +40,8 @@ spec = describe "Board" $ do
     isFull newBoard `shouldBe` True
   it "should render board 1" $ do
     let lastB = foldl (\b col -> setMarkerAt (col, 0) X b) defaultBoard [0..4]
-    render lastB `shouldBe` "       \n       \n       \n       \n       \nXXXXX  "
+    render lastB `shouldBe` ".......\n.......\n.......\n.......\n.......\nXXXXX.."
   it "should render board 2" $ do
     let lastB = foldl (\b row -> setMarkerAt (0, row) O b) defaultBoard [0..4]
-    render lastB `shouldBe` "       \nO      \nO      \nO      \nO      \nO      "
+    render lastB `shouldBe` ".......\nO......\nO......\nO......\nO......\nO......"
 

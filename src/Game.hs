@@ -7,18 +7,25 @@ module Game
         , GameState(..)
         , makeMove
         , newGame
+        , isGameOver
+        , isWin
         ) where
 
 import Types (Marker(..), Index, Direction)
-import Directions (indexInDirection)
+import Directions (indexInDirection
+                  , directions)
 import Board (Board(..)
              , columnIndices
              , isEmptyAt
+             , isFull
              , setMarkerAt
+             , indicies
              , getMarkerAt
              , defaultBoard)
 import Data.List (find)
+import Data.Maybe (catMaybes, isJust)
 import Control.Monad.State (State(..)
+                           , guard
                            , get
                            , put)
 
@@ -49,6 +56,17 @@ checkBoardPos board index marker dir steps = m == Just marker && next where
   m = getMarkerAt index board
   next = checkBoardPos board nextIndex marker dir $ steps - 1
 
+winAtIndex :: Board -> Index -> Maybe Marker
+winAtIndex board i = result where
+  maybeMarker = getMarkerAt i board
+  result = do
+    m <- maybeMarker
+    guard $ m /= Empty
+    guard $ checkMarker m
+    return m
+  checkMarker :: Marker -> Bool
+  checkMarker m = any id [ checkBoardPos board i m dir 4 | dir <- directions ]
+
 firstEmptyRowIn :: Board -> Int -> Maybe Int
 firstEmptyRowIn board@(Board { positions = ps }) col = fmap snd found where
   found = find (\i -> isEmptyAt i board) $ columnIndices board col
@@ -75,4 +93,12 @@ makeMove col = do
   let lastState = GameState { current = marker, board = newBoard }
   put $ lastState:gameStates
   return lastState
+
+isWin :: GameState -> Maybe Marker
+isWin (GameState { board=board }) = result where
+  wins = catMaybes $ map (winAtIndex board) $ indicies board
+  result = find (const True) wins
+
+isGameOver :: GameState -> Bool
+isGameOver g@(GameState { board=board }) = isFull board || isJust (isWin g)
 

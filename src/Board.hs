@@ -74,7 +74,7 @@ render b@(Board { rows=rows, columns=cols, positions=positions }) = renderedRows
   renderMarker index = maybe " " showMarker $ getMarkerAt index b
 
   showMarker :: Marker -> String
-  showMarker Empty = " "
+  showMarker Empty = "."
   showMarker X = "X"
   showMarker O = "O"
 

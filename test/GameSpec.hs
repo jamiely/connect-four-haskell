@@ -18,6 +18,7 @@ import Game (checkBoardPos
           , GameState(..)
           , makeMove
           , newGame
+          , isGameOver
             )
 import Control.Monad.State (evalState
                            )
@@ -30,7 +31,7 @@ main = hspec $ do
   spec
 
 spec :: SpecWith (Arg Expectation)
-spec = describe "gamespec is not implemented" $ do
+spec = describe "Game" $ do
   it "should return true when checkBoardPos is called with 0 steps" $ do
     checkBoardPos defaultBoard origin X north 0 `shouldBe` True
   it "should return first empty row" $ do
@@ -67,7 +68,7 @@ spec = describe "gamespec is not implemented" $ do
                    makeMove 1 -- O
     let lastState = evalState moves initialState
     let b = board lastState
-    render b `shouldBe` "       \n       \n       \n       \n       \nXO     "
+    render b `shouldBe` ".......\n.......\n.......\n.......\n.......\nXO....."
   it "should find first empty row" $ do
     let moves = do makeMove 0
                    makeMove 0
@@ -91,5 +92,57 @@ spec = describe "gamespec is not implemented" $ do
     let p = eval $ repl 6
     let q = eval $ repl 7
     board p `shouldBe` board q
+  it "TODO: we should probably have some error instead. should not change current marker when move is made in full column." $ do
+    let eval = \a -> evalState a initialState
+    let repl i = liftM last $ replicateM i $ makeMove 0
+    let p = eval $ repl 6
+    let q = eval $ repl 7
+    current p `shouldBe` current q
+  it "should detect game over due to no moves left" $ do
+    let fill c = liftM last $ replicateM 6 $ makeMove c
+    let moves = do fill 0
+                   fill 1
+                   fill 2
+                   fill 3
+                   fill 4
+                   fill 5
+                   fill 6
+                   fill 7
+    let state = evalState moves initialState
+    isGameOver state `shouldBe` True
+  it "should detect game over due to 4 in row verical" $ do
+    let moves = do makeMove 0
+                   makeMove 1
+                   makeMove 0
+                   makeMove 1
+                   makeMove 0
+                   makeMove 1
+                   makeMove 0
+    let lastState = evalState moves initialState
+    isGameOver lastState `shouldBe` True
+  it "should detect game over due to 4 in row diagonal" $ do
+    let moves = do makeMove 1
+                   makeMove 2
+                   makeMove 2
+                   makeMove 3
+                   makeMove 3
+                   makeMove 0
+                   makeMove 3
+                   makeMove 4
+                   makeMove 4
+                   makeMove 4
+                   makeMove 4
+    let lastState = evalState moves initialState
+    isGameOver lastState `shouldBe` True
+  it "should detect game over due to 4 in row horizontal" $ do
+    let moves = do makeMove 0
+                   makeMove 0
+                   makeMove 1
+                   makeMove 1
+                   makeMove 2
+                   makeMove 2
+                   makeMove 3
+    let lastState = evalState moves initialState
+    isGameOver lastState `shouldBe` True
 
 
