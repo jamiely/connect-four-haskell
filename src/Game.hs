@@ -68,7 +68,11 @@ makeMove col = do
   gameStates <- get
   let GameState { current = c, board = board } = head gameStates
   let newBoard = makeBoardMove col c board
-  let lastState = GameState { current = nextMarker c, board = newBoard }
+  let marker = if newBoard == board then
+                 c
+               else
+                 nextMarker c
+  let lastState = GameState { current = marker, board = newBoard }
   put $ lastState:gameStates
   return lastState
 
